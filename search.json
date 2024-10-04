@@ -1,0 +1,32 @@
+[
+  {
+    "title": "JZC-001",
+    "url": "/2024/10/04/JZC001.html",
+    "content": "通过GPT模型给定32x32的初始状态，预测下一个状态\n",
+    "tags": "foo, bar"
+  },
+  {
+    "title": "JZC-002",
+    "url": "/2024/10/04/JZC002.html",
+    "content": "用三维张量作为RNN的hidden state,意图在于记忆节点之间的关系；update的时候分为三步骤，依次做write, move, backlink. \n\n![Image](/papers/JZC-002/1.png)\n",
+    "tags": "Transformer"
+  },
+  {
+    "title": "JZC-003",
+    "url": "/2024/10/04/JZC003.html",
+    "content": "在attention的时候，除了q,k,v,还引入一个r,这个r最后和context一起做点积，有助于理解“关系”，在数学问题上取得改进\n\n![Image](/papers/JZC-003/1.png)\n\n![Image](/papers/JZC-003/2.png)\n",
+    "tags": "Transformer"
+  },
+  {
+    "title": "JZC-004",
+    "url": "/2024/10/04/JZC004.html",
+    "content": "对于形态丰富(拥有大量词缀等)的语言，发现【（1）使用TPT （2）使用byte-pair的变形的embedding,或对词缀作为token 】可以提高翻译效果\n",
+    "tags": "Transformer"
+  },
+  {
+    "title": "JZC-005",
+    "url": "/2024/10/04/JZC005.html",
+    "content": "diffusion可以理解成学习一个restoration的过程，这里对应的是denoising,作者尝试了各种其他的图像生成任务，例如denoising, impainting, super-resolution, desnowification, deblurring等",
+    "tags": "Diffusion"
+  }
+]

@@ -1,0 +1,112 @@
+---
+layout: page
+title: About
+permalink: /search/
+---
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
+<!-- include the search.css file -->
+
+<link rel="stylesheet" href="/search.css">
+
+
+<div id="tag-container">
+  <button class="tag-btn" data-tag="Diffusion">Diffusion</button>
+  <button class="tag-btn" data-tag="Transformer">Transformer</button>
+</div>
+
+
+<div id="search-container">
+    <input type="text" id="search-input" placeholder="输入关键词搜索">
+    <div id="search-results"></div>
+</div>
+
+
+<!-- the search script -->
+
+<script>
+    var fuse;
+    var documents = [];
+    var activeTags = new Set();
+
+    fetch('/search.json')
+      .then(response => response.json())
+      .then(data => {
+        documents = data;
+
+        var options = {
+          includeScore: true, 
+          keys: ['title', 'content', 'tags'],
+          threshold: 0.1,
+          minMatchCharLength: 1
+        };
+
+        fuse = new Fuse(documents, options);
+
+        showResults(documents);
+      });
+
+      function showResults(docs) {
+        var resultsContainer = document.getElementById('search-results');
+        resultsContainer.innerHTML = '';
+
+        docs.forEach(function (doc) {
+          var resultElement = document.createElement('div');
+          resultElement.innerHTML = `
+            <h3><a href="${doc.url}">${doc.title}</a></h3>
+            <p>${doc.tags}</p>
+            <p>${doc.content.substring(0, 150)}...</p>
+          `;
+          resultsContainer.appendChild(resultElement);
+        });
+      }
+
+    // add debounce to search
+
+    function do_search(query) {
+      if (query.trim() === '') {
+          return (documents); 
+        } else {
+          var results = fuse.search(query);
+          var matchedDocs = results.map(result => result.item); 
+          return (matchedDocs);
+        }
+    }
+
+
+  function SearchAndFilter() {
+    var query = document.getElementById('search-input').value;
+    var matchedDocs = do_search(query);
+    var results = matchedDocs.filter(doc => {
+      return Array.from(activeTags).every(tag => doc.tags.includes(tag));
+    });
+    return results;
+  }
+
+
+    let debounceTimeout;
+    document.getElementById('search-input').addEventListener('input', function (event) {
+      clearTimeout(debounceTimeout);
+      debounceTimeout = setTimeout(function () {
+        var results = SearchAndFilter();
+        showResults(results);
+      }, 300); // delay 300ms
+    });
+
+  document.querySelectorAll('.tag-btn').forEach(button => {
+  button.addEventListener('click', function () {
+    var tag = this.getAttribute('data-tag');
+
+    if (this.classList.contains('active')) {
+      this.classList.remove('active');
+      activeTags.delete(tag);
+    } else {
+      this.classList.add('active');
+      activeTags.add(tag);
+    }
+   showResults(SearchAndFilter());
+  });
+});
+</script>
