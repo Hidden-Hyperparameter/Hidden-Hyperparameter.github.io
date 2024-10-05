@@ -10,7 +10,9 @@ module Jekyll
           "title" => post.data['title'],
           "url" => post.url,
           "content" => post.content.gsub(/<\/?[^>]*>/, ""),
-          "tags" => post.data['tags'].join(", ")
+          "tags" => post.data['tags'],
+          "paper" => post.data['paper'],
+          "paper_url" => post.data['paper_url'],
         }
       end
 

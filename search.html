@@ -1,6 +1,6 @@
 ---
 layout: page
-title: About
+title: Search
 permalink: /search/
 ---
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
@@ -13,8 +13,6 @@ permalink: /search/
 
 
 <div id="tag-container">
-  <button class="tag-btn" data-tag="Diffusion">Diffusion</button>
-  <button class="tag-btn" data-tag="Transformer">Transformer</button>
 </div>
 
 
@@ -30,6 +28,7 @@ permalink: /search/
     var fuse;
     var documents = [];
     var activeTags = new Set();
+    var tag_colors = new Map();
 
     fetch('/search.json')
       .then(response => response.json())
@@ -45,8 +44,26 @@ permalink: /search/
 
         fuse = new Fuse(documents, options);
 
+        initTags();
+        setTags()
         showResults(documents);
       });
+
+      function stringToColor(str, reversed = false) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        const r = (hash & 0xFF0000) >> 16; // 取红色部分
+        const g = (hash & 0x00FF00) >> 8;  // 取绿色部分
+        const b = hash & 0x0000FF;         // 取蓝色部分
+        if (reversed){
+          return `rgb(${128 - (r % 128)}, ${128 - (g % 128)}, ${128 - (b % 128)})`;
+        }  
+        return `rgb(${(r % 128) + 128}, ${(g % 128) + 128}, ${(b % 128) + 128})`;
+      }
+
 
       function showResults(docs) {
         var resultsContainer = document.getElementById('search-results');
@@ -54,13 +71,74 @@ permalink: /search/
 
         docs.forEach(function (doc) {
           var resultElement = document.createElement('div');
+          // for each tag in doc.tags, create a button
+          buttons = doc.tags.map(tag => {
+           return  `<button class="display-small-btn" style="background-color:${tag_colors.get(tag)}">${tag}</button>`
+          }).join('');
           resultElement.innerHTML = `
-            <h3><a href="${doc.url}">${doc.title}</a></h3>
-            <p>${doc.tags}</p>
+          <div class="search-result">
+            <h3 class="search-result-title"><a href="${doc.url}">${doc.title}</a></h3>
+            <p>${buttons}</p>
+            <p class="paper">${doc.paper} <a href=${doc.paper_url}> [paper] </a></p>
             <p>${doc.content.substring(0, 150)}...</p>
+          </div>
           `;
           resultsContainer.appendChild(resultElement);
         });
+      }
+
+      function initTags() {    
+        var tags = new Map();
+        documents.forEach(doc => {
+          doc.tags.forEach(tag => {
+            if (tags.has(tag)) {
+              tags.set(tag, tags.get(tag) + 1);
+            } else {
+              tags.set(tag, 1);
+            }
+          });
+
+          // add tag colors
+          doc.tags.forEach(tag => {
+            if (!tag_colors.has(tag)) {
+              tag_colors.set(tag, stringToColor(tag));
+            }
+          });
+        });
+
+        tags = Array.from(tags).sort((a, b) => b[1] - a[1]).map(tag => tag[0]);
+        if (tags.length > 10) {
+          tags = tags.slice(0, 10);
+        }
+
+        var tagContainer = document.getElementById('tag-container');
+        tags.forEach(tag => {
+          var tagButton = document.createElement('button');
+          tagButton.classList.add('tag-btn');
+          tagButton.setAttribute('data-tag', tag);
+          tagButton.style.backgroundColor = tag_colors.get(tag);
+          tagButton.innerText = tag;
+          tagContainer.appendChild(tagButton);
+        });
+      }
+
+      function setTags() {
+        document.querySelectorAll('.tag-btn').forEach(button => {
+        button.addEventListener('click', function () {
+          var tag = this.getAttribute('data-tag');
+
+          if (this.classList.contains('active')) {
+            this.classList.remove('active');
+            this.style.backgroundColor = stringToColor(tag, false);
+            activeTags.delete(tag);
+          } else {
+            this.classList.add('active');
+            this.style.backgroundColor = stringToColor(tag, true);
+            activeTags.add(tag);
+          }
+        showResults(SearchAndFilter());
+        });
+      });
       }
 
     // add debounce to search
@@ -95,18 +173,5 @@ permalink: /search/
       }, 300); // delay 300ms
     });
 
-  document.querySelectorAll('.tag-btn').forEach(button => {
-  button.addEventListener('click', function () {
-    var tag = this.getAttribute('data-tag');
 
-    if (this.classList.contains('active')) {
-      this.classList.remove('active');
-      activeTags.delete(tag);
-    } else {
-      this.classList.add('active');
-      activeTags.add(tag);
-    }
-   showResults(SearchAndFilter());
-  });
-});
 </script>
