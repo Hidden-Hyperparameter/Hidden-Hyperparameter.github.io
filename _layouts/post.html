@@ -3,6 +3,23 @@ layout: default
 ---
 <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
+  <script>
+    function stringToColor(str, reversed = false) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+
+      const r = (hash & 0xFF0000) >> 16; // 取红色部分
+      const g = (hash & 0x00FF00) >> 8;  // 取绿色部分
+      const b = hash & 0x0000FF;         // 取蓝色部分
+      if (reversed){
+        return `rgb(${128 - (r % 128)}, ${128 - (g % 128)}, ${128 - (b % 128)})`;
+      }  
+      return `rgb(${(r % 128) + 128}, ${(g % 128) + 128}, ${(b % 128) + 128})`;
+    }
+  </script>
+
   <header class="post-header">
     <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
     <!-- add the paper title -->
@@ -14,6 +31,16 @@ layout: default
         {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
         {{ page.date | date: date_format }}
       </time>
+      <!-- add tags here -->
+       <br>
+      {%- if page.tags -%}
+        <span class="post-tags">
+          {%- for tag in page.tags -%}
+            <button class="display-small-btn" style="margin: 3px; font-size: 1em;margin-bottom: 0;">{{ tag }}</button>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+
       {%- if page.author -%}
         • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="p-author h-card" itemprop="name">{{ page.author }}</span></span>
       {%- endif -%}</p>
