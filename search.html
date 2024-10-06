@@ -33,11 +33,12 @@ permalink: /search/
     fetch('/search.json')
       .then(response => response.json())
       .then(data => {
-        documents = data;
+        documents = data.posts;
+        console.log(documents);
 
         var options = {
           includeScore: true, 
-          keys: ['title', 'content', 'tags'],
+          keys: ['title', 'content', 'tags', 'paper'],
           threshold: 0.1,
           minMatchCharLength: 1
         };

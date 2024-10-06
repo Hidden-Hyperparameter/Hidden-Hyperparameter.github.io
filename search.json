@@ -1,53 +1,17 @@
-[
-  {
-    "title": "JZC-001",
-    "url": "/2024/10/04/JZC001.html",
-    "content": "通过GPT模型给定32x32的初始状态，预测下一个状态\n",
-    "tags": [
-      "Transformer",
-      "Silly"
-    ],
-    "paper": "LifeGPT: Topology-Agnostic Generative Pretrained Transformer Model for Cellular Automata",
-    "paper_url": "https://arxiv.org/html/2409.12182v1"
-  },
-  {
-    "title": "JZC-002",
-    "url": "/2024/10/04/JZC002.html",
-    "content": "用三维张量作为RNN的hidden state,意图在于记忆节点之间的关系；update的时候分为三步骤，依次做write, move, backlink. \n\n![Image](/papers/JZC-002/1.png)\n",
-    "tags": [
-      "Transformer"
-    ],
-    "paper": "Learning to Reason with Third-Order Tensor Products",
-    "paper_url": "https://arxiv.org/pdf/1811.12143"
-  },
-  {
-    "title": "JZC-003",
-    "url": "/2024/10/04/JZC003.html",
-    "content": "在attention的时候，除了q,k,v,还引入一个r,这个r最后和context一起做点积，有助于理解“关系”，在数学问题上取得改进\n\n![Image](/papers/JZC-003/1.png)\n\n![Image](/papers/JZC-003/2.png)\n",
-    "tags": [
-      "Transformer"
-    ],
-    "paper": "Enhancing the Transformer With Explicit Relational Encoding for Math Problem Solving",
-    "paper_url": "https://arxiv.org/pdf/1910.06611"
-  },
-  {
-    "title": "JZC-004",
-    "url": "/2024/10/04/JZC004.html",
-    "content": "对于形态丰富(拥有大量词缀等)的语言，发现【（1）使用TPT （2）使用byte-pair的变形的embedding,或对词缀作为token 】可以提高翻译效果\n",
-    "tags": [
-      "Transformer"
-    ],
-    "paper": "Structural Biases for Improving Transformers on Translation into Morphologically Rich Languages",
-    "paper_url": "https://arxiv.org/pdf/2208.06061"
-  },
-  {
-    "title": "JZC-005",
-    "url": "/2024/10/04/JZC005.html",
-    "content": "diffusion可以理解成学习一个restoration的过程，这里对应的是denoising,作者尝试了各种其他的图像生成任务，例如denoising, impainting, super-resolution, desnowification, deblurring等",
-    "tags": [
-      "Diffusion"
-    ],
-    "paper": "Cold Diffusion: Inverting Arbitrary Image Transforms Without Noise",
-    "paper_url": "https://arxiv.org/pdf/2208.09392"
-  }
-]
+---
+layout: null
+---
+{
+  "posts": [
+    {% for post in site.posts %}
+    {
+      "title": "{{ post.title | escape }}",
+      "url": "{{ post.url | relative_url }}",
+      "tags": [{% for tag in post.tags %}"{{ tag }}"{% if forloop.last == false %}, {% endif %}{% endfor %}],
+      "content": {{ post.content | strip_html | jsonify }},
+      "paper": {{ post.paper | jsonify }},
+      "paper_url": {{ post.paper_url | jsonify }}
+    }{% if forloop.last == false %}, {% endif %}
+    {% endfor %}
+  ]
+}
