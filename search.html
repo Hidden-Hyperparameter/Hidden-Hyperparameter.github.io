@@ -108,9 +108,9 @@ permalink: /search/
         });
 
         tags = Array.from(tags).sort((a, b) => b[1] - a[1]).map(tag => tag[0]);
-        if (tags.length > 10) {
-          tags = tags.slice(0, 10);
-        }
+        // if (tags.length > 10) {
+        //   tags = tags.slice(0, 10);
+        // }
 
         var tagContainer = document.getElementById('tag-container');
         tags.forEach(tag => {
