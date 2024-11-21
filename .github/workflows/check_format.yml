@@ -1,0 +1,14 @@
+name: A Python Script
+
+on: push
+
+jobs:
+  check-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Python script directly
+        run: |
+          python3 .github/scripts/hook.py

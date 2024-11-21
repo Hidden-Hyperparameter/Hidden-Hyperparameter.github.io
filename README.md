@@ -1,3 +1,12 @@
+## If you are here because Github Workflow Fails
+
+**You can only use `|` in thw following cases:**
+- In a table. In such case, the line must start with `|`.
+- `\left|` and `\right|` for abs: $\left|x\right|$
+- `\|` for norm: $\|x\|^2$
+
+For other cases, use `\mid` instead.
+
 # Paper sharing website
 
 本仓库主要用于记录大家读过的论文，方便大家共享/查找
