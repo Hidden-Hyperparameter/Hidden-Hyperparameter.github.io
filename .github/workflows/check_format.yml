@@ -3,12 +3,12 @@ name: A Python Script
 on: push
 
 jobs:
-  check-env:
+  check-format-zhh:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Run Python script directly
+      - name: (Look At Here) Run Python Script
         run: |
           python3 .github/scripts/hook.py

@@ -21,7 +21,6 @@ def get_tags(content):
             val = val[1:-1]
         tags.append(val)
         i += 1
-    print('results:', tags)
     return [c.strip() for c in tags]
 
 def check_format(title,content):
@@ -45,7 +44,6 @@ all_tags = set()
 for md_file in os.listdir(father):
     if not md_file.endswith('.md'):
         continue
-    print('read file:', md_file)
     with open(os.path.join(father,md_file), 'r') as f:
         content = f.read()
         new_tags = get_tags(content)
