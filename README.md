@@ -15,6 +15,12 @@ For other cases, use `\mid` instead.
 
 值得复现的论文可以标注
 
+## TODO List
+- [ ] Stable Target Field for Reduced Variance Score Estimation in Diffusion Models
+- [ ] Consistency Flow Matching: Defining Straight Flows with Velocity Consistency
+- [ ] Implicit Generation and Modeling with Energy-Based Models
+- [ ] Consistency Models Made Easy
+
 ## 创建一个note
 
 1. 在[_posts](./_posts/)文件夹创造一个文件，文件名必须是`yyyy-mm-dd-title.md`。
