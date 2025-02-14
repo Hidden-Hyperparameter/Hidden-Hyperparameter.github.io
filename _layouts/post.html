@@ -19,7 +19,8 @@ layout: default
       return `rgb(${(r % 128) + 128}, ${(g % 128) + 128}, ${(b % 128) + 128})`;
     }
   </script>
-
+  <link rel="stylesheet" href="{{ "/assets/post_additional.css" | relative_url }}">
+  
   <header class="post-header">
     <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
     <!-- add the paper title -->
