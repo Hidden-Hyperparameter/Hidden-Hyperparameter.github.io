@@ -13,11 +13,11 @@ if __name__ == "__main__":
         # title="SANA-Sprint...",  # 可选：提供标题，会覆盖自动获取
         paper_link="https://arxiv.org/pdf/2503.09641",  # arxiv URL，用于自动提取title和paper_year
         who="ZKY",
-        tags=["MultiModal", "Diffusion"],
+        tags=["Multimodal", "Diffusion"],
         # who_count="001",        # 可选：手动指定编号（格式"001"）
         # paper_year="2025",      # 可选：自动从arxiv URL提取，如需覆盖可指定
         # time="2026-01-09",      # 可选：自定义发布日期
     )
     
     # 删除论文笔记（可选）
-    #upload_file_main.delete_paper(who="ZKY", who_count="002")
+    #upload_file_main.delete_paper(who="ZKY", who_count="001")
