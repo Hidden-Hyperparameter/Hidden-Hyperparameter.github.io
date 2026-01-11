@@ -9,11 +9,11 @@ if __name__ == "__main__":
     # 4. 从markdown文件名提取
     
     upload_file_main.upload_paper(
-        md_path="D:/Desktop/texts/笔记/算法/T2I_Papers.md",
+        md_path="D:/Desktop/texts/笔记/算法/VQRAE.md",
         # title="SANA-Sprint...",  # 可选：提供标题，会覆盖自动获取
-        paper_link="https://arxiv.org/pdf/2503.09641",  # arxiv URL，用于自动提取title和paper_year
+        paper_link="https://arxiv.org/abs/2511.23386",  # arxiv URL，用于自动提取title和paper_year
         who="ZKY",
-        tags=["Multimodal", "Diffusion"],
+        tags=["Multimodal", "Tokenizer", "Discrete"],
         # who_count="001",        # 可选：手动指定编号（格式"001"）
         # paper_year="2025",      # 可选：自动从arxiv URL提取，如需覆盖可指定
         # time="2026-01-09",      # 可选：自定义发布日期
