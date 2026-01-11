@@ -20,4 +20,4 @@ if __name__ == "__main__":
     )
     
     # 删除论文笔记（可选）
-    #upload_file_main.delete_paper(who="ZKY", who_count="001")
+    #upload_file_main.delete_paper(who="ZKY", who_count="002")

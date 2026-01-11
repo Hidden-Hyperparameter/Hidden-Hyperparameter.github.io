@@ -181,6 +181,12 @@ def upload_paper(
     
     # 复制图片并更新内容
     processed_content = copy_images(content, md_path, post_images_dir, post_id_display)
+    # Replace pipes inside math blocks and validate overall format
+    processed_content, format_errors = check_format(os.path.basename(md_path), processed_content)
+    if format_errors:
+        for e in format_errors:
+            _print_warning(e)
+        raise ValueError("Invalid '|' characters found in markdown. See warnings above.")
     
     # 生成frontmatter
     frontmatter = generate_frontmatter(
@@ -323,7 +329,7 @@ def copy_images(
         post_id: post ID (如 ZKY001)
         
     Returns:
-        更新后的markdown内容，图片路径已改为相对于papers目录
+        更新后的markdown内容，图片路径已改为绝对于papers目录
     """
     source_dir = os.path.dirname(source_md_path)
     os.makedirs(target_images_dir, exist_ok=True)
@@ -383,7 +389,7 @@ def copy_and_return_relative_path(
     post_id: str,
 ) -> str:
     """
-    复制单个图片文件并返回相对路径
+    复制单个图片文件并返回绝对路径
     
     Args:
         image_path: 源图片路径（可能是相对或绝对路径）
@@ -422,6 +428,60 @@ def copy_and_return_relative_path(
     # 格式: /papers/ZKY-001/image.png （post_id包含-)
     relative_path = f"/papers/{post_id}/{filename}"
     return relative_path
+
+
+def check_format(title: str, content: str):
+    """
+    Ensure no stray '|' remain in markdown. Replace '|' inside $$...$$ with
+    '\\mid' except when they are part of '\\left|' or '\\right|' or
+    escaped '\\|'. Return (possibly_modified_content, errors_list).
+    """
+    errors = []
+
+    def _replace_pipes_in_math(m):
+        # 现在 m.group(1) 是起始符号 ($ 或 $$)
+        # m.group(2) 是括号内部的公式内容
+        delim = m.group(1) 
+        inner = m.group(2)
+        
+        # 你的原有保护逻辑不变
+        inner = inner.replace(r"\left|", "__LEFTPIPE__")
+        inner = inner.replace(r"\right|", "__RIGHTPIPE__")
+        inner = inner.replace(r"\|", "__ESCAPEDPIPE__")
+        
+        inner = inner.replace('|', r"\mid ")
+        
+        inner = inner.replace("__LEFTPIPE__", r"\left|")
+        inner = inner.replace("__RIGHTPIPE__", r"\right|")
+        inner = inner.replace("__ESCAPEDPIPE__", r"\|")
+        
+        # 动态返回：根据匹配到的是什么边界，就还原什么边界
+        return f"{delim}{inner}{delim}"
+
+    # 正则修改：(\${1,2}) 匹配 $ 或 $$ 并存入 group(1)
+    # \1 确保结尾和开头一致
+    content = re.sub(r"(\${1,2})(.*?)\1", _replace_pipes_in_math, content, flags=re.DOTALL)
+
+    # For checking, remove explicit left/right/escaped pipes so they won't
+    # be counted as errors
+    check_content = content.replace(r"\left|", "").replace(r"\right|", "").replace(r"\\|", "")
+
+    lines = check_content.split('\n')
+    for i, line in enumerate(lines):
+        if '|' in line and not (line.strip().startswith('|') and not line.strip().endswith('|')):
+            # include surrounding context (2 lines before and after)
+            start = max(0, i-2)
+            end = min(len(lines), i+3)
+            context_lines = []
+            for ln in range(start, end):
+                prefix = '>' if ln == i else ' '
+                context_lines.append(f"{prefix} {ln+1}: {lines[ln]}")
+            context_text = '\n'.join(context_lines)
+            errors.append(
+                f"💩💩Fatal💩💩: File {title}, line {i+1} contains invalid `|`. Context:\n{context_text}\nYou should use `|` properly, see README.md for more information"
+            )
+
+    return content, errors
 
 
 def delete_paper(who: str, who_count: str = None, time: str = None):
